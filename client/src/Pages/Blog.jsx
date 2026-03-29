@@ -1,4 +1,5 @@
 import Moment from 'moment'
+import toast from 'react-hot-toast'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { assets, blog_data, comments_data } from '../assets/assets'
@@ -12,7 +13,7 @@ const Blog = () => {
 
     const {axios}=useAppContext();
     const [data, setData] = useState(null);
-    const [comments, setComments] = useState(null);
+    const [comments, setComments] = useState([]);
     const [name, setName] = useState('');
     const [content, setContent] = useState('');
     const fetchBlogData = async () => {
@@ -25,31 +26,49 @@ const Blog = () => {
     }
 
 
-    const fetchComments = async () => {
-        try {
-            const {data}=await axios.post('/api/blog/comments',{blogId:id})
-            if(data.success){
-                toast.success(data.message)
-                setName('')
-                setContent('')
-            }else{
-                toast.error(data.message);
-            }
-        } catch (error) {
-            toast.error(error.message)
-        }
-    }
+    // const fetchComments = async () => {
+    //     try {
+    //         const {data}=await axios.post('/api/blog/comments',{blogId:id})
+    //         if(data.success){
+    //             toast.success(data.message)
+    //             setName('')
+    //             setContent('')
+    //             setComments(data.comments)
+    //         }else{
+    //             toast.error(data.message);
+    //         }
+    //     } catch (error) {
+    //         toast.error(error.message)
+    //     }
+    // }
 
+    const fetchComments = async () => {
+    try {
+        const res = await axios.get('/api/admin/comments')
+
+        if (res?.data?.success) {
+            setComments(res.data.comments)
+        } else {
+            toast.error(res?.data?.message || "Something went wrong")
+        }
+
+    } catch (error) {
+        console.log(error)
+        toast.error(error.message)
+    }
+}
 
     const addComment = async (e) => {
         e.preventDefault()
         try {
-            const {data}=await axios.post('/api/blog/add-comments',{blog:id,name,content})
-            if(data.success){
-                setComments(data.comments)
-            }else{
-                toast.error(data.message);
-            }
+            const {data}=await axios.post('/api/blog/add-comment',{blogId:id,name,content})
+            if (data.success) {
+    setName('')
+    setContent('')
+    fetchComments()   // 🔥 THIS LINE
+} else {
+    toast.error(data.message)
+}
         } catch (error) {
             toast.error(error.message)
         }

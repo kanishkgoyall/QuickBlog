@@ -1,7 +1,7 @@
 import React from 'react'
 import { assets } from '../../assets/assets';
 import { useAppContext } from '../../context/AppContext';
-
+import toast from 'react-hot-toast';
 const CommentTableItem = ({comment,fetchComments}) => {
     const {blog,createdAt,_id}=comment;
     const blogDate=new Date(createdAt);
@@ -9,43 +9,44 @@ const CommentTableItem = ({comment,fetchComments}) => {
     const {axios}=useAppContext();
 
 
-    const approveComment=async()=>{
-        try {
-            const {data}=await axios.get('/api/admin/approve-comment',{id:_id})
+    const approveComment = async () => {
+    try {
+        const { data } = await axios.post('/api/admin/approve-comment', {
+            id: _id
+        });
 
-            if(data.success){
-                toast.success(data.message)
-                fetchComments()
-            }else{
-                toast.error(data.message)
-            }
-        } catch (error) {
-            toast.error(error.message)
+        if (data.success) {
+            toast.success(data.message);
+            fetchComments();
+        } else {
+            toast.error(data.message);
         }
+    } catch (error) {
+        toast.error(error.message);
     }
+};
 
 
+const deleteComment = async () => {
+    try {
+        const confirmDelete = window.confirm('Are you sure you want to delete this comment?');
 
-    const deleteComment=async()=>{
-        
-        try {
-            const confirm=window.confirm('Are you sure you want to delete this comment?')
+        if (!confirmDelete) return;
 
-            if(!confirm) return;
+        const { data } = await axios.post('/api/admin/delete-comment', {
+            id: _id
+        });
 
-            const {data}=await axios.get('/api/admin/delete-comment',{id:_id})
-
-            if(data.success){
-                toast.success(data.message)
-                fetchComments()
-            }else{
-                toast.error(data.message)
-            }
-        } catch (error) {
-            toast.error(error.message)
+        if (data.success) {
+            toast.success(data.message);
+            fetchComments();
+        } else {
+            toast.error(data.message);
         }
+    } catch (error) {
+        toast.error(error.message);
     }
-
+};
 
 
     return (
@@ -66,12 +67,12 @@ const CommentTableItem = ({comment,fetchComments}) => {
         <td>
             <div className='inline-flex items-center gap-4'>
                 {!comment.isApproved ?
-                <img  onclick={approveComment} src={assets.tick_icon} className='w-5 hover:scale-110 transition-all cursor-pointer' /> 
+                <img  onClick={approveComment} src={assets.tick_icon} className='w-5 hover:scale-110 transition-all cursor-pointer' /> 
                 :<p className='text-xs border border-green-600 rounded-full px-3 py-1'>Approved</p>
                 }
 
 
-                <img onclick={deleteComment} src={assets.bin_icon} alt="" className='w-5 hover:scale-110 transition-all cursor-pointer' />
+                <img onClick={deleteComment} src={assets.bin_icon} alt="" className='w-5 hover:scale-110 transition-all cursor-pointer' />
 
                 
 

@@ -1,7 +1,9 @@
+import toast from 'react-hot-toast'
 import React from 'react'
 import { useAppContext } from '../../context/AppContext'
-
+import { Navigate, useNavigate } from 'react-router-dom';
 const Login = () => {
+  const navigate=useNavigate();
   const {axios,setToken}=useAppContext();
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
@@ -16,7 +18,7 @@ const Login = () => {
             setToken(data.token)
             localStorage.setItem('token',data.token)
             axios.defaults.headers.common['Authorization']=data.token;
-
+            navigate('/admin')
 
           }else{
             toast.error(data.message)

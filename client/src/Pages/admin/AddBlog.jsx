@@ -3,6 +3,7 @@ import { assets, blogCategories } from '../../assets/assets'
 import Quill from 'quill'
 import { useAppContext } from '../../context/AppContext'
 import { data } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import {parse} from 'marked'
 const AddBlog = () => {
 
@@ -12,7 +13,7 @@ const AddBlog = () => {
     const [loading,setLoading]=useState(false)
     const editorRef = useRef(null)
     const quillRef = useRef(null)
-    const [image, setImage] = useState(false)
+    const [image, setImage] = useState(null)
     const [title, setTitle] = useState('')
     const [subTitle, setSubTitle] = useState('')
     const [category, setCategory] = useState('Startup')
@@ -26,7 +27,7 @@ const AddBlog = () => {
             const blog={
                 title,subTitle,
                 description :quillRef.current.root.innerHTML,
-                category:isPublished 
+                category,isPublished 
             }
             const formData=new FormData();
             formData.append('blog',JSON.stringify(blog))
@@ -34,7 +35,7 @@ const AddBlog = () => {
 
             const {data}=await axios.post('/api/blog/add',formData)
             if(data.success){
-                toast.succes(data.message)
+                toast.success(data.message)
                 setImage(false);
                 setTitle('')
                 quillRef.current.root.innerHTML=''

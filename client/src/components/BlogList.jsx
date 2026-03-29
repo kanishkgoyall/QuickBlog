@@ -1,4 +1,4 @@
-import {motion} from "motion/react"
+import {motion} from "framer-motion"
 import React from 'react'
 import { blog_data, blogCategories } from '../assets/assets'
 import { useState } from 'react'
@@ -17,7 +17,7 @@ const BlogList = () => {
     return (
         
         <div>
-            <div className='flex justify-center gap4 sm:gap-8 my-10 relative'>
+            <div className='flex justify-center gap-4 sm:gap-8 my-10 relative'>
                 {blogCategories.map((item) => (
                     <div  key={item} className='relative'>
                         <button onClick={()=>setMenu(item)}
@@ -39,7 +39,7 @@ const BlogList = () => {
 
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40">
-                {filteredBlogs.filter((blog)=> menu==="All" ? true: blog.category===menu).
+                {filteredBlogs().filter((blog)=> menu==="All" ? true: blog.category===menu).
                 map((blog)=><BlogCard key={blog._id} blog={blog} />)
                 }
             </div>

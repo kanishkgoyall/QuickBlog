@@ -43,19 +43,29 @@ export const getAllComments=async(req,res)=>{
 
 
 
-export const getDashboard=async(req,res)=>{
+export const getDashboard = async (req, res) => {
     try {
-        const recentBlogs=await Blog.find({}).sort({createdAt:-1}).limit(5)
-        const blogs=Blog.countDocuments();
-        const comments=await Comment.countDocuments()
-        const drafts=await Blog.countDocuments({isPublished:false})
-        const dashboardData={recentBlogs,blogs,comments,drafts}
-     res.json({success:true,dashboardData})
-    } catch (error) {
-        res.json({success:false,message:error.message})
-    }
-}
+        const recentBlogs = await Blog.find({})
+            .sort({ createdAt: -1 })
+            .limit(5);
 
+        const blogs = await Blog.countDocuments();        // ✅ fixed
+        const comments = await Comment.countDocuments();
+        const drafts = await Blog.countDocuments({ isPublished: false });
+
+        const dashboardData = {
+            recentBlogs,
+            blogs,
+            comments,
+            drafts
+        };
+
+        res.json({ success: true, dashboardData });
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+};
 
 
 

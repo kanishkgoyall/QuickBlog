@@ -62,7 +62,7 @@ export const getBlogById = async (req, res) => {
         if (!blog) {
             return res.json({ success: false, message: "blog not found" })
         }
-        res.json({ success: true, message: blog })
+        res.json({ success: true, blog })
     } catch (error) {
         res.json({ success: false, message: error.message })
     }
@@ -74,8 +74,8 @@ export const getBlogById = async (req, res) => {
 
 export const deleteBlogById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const blog = await Blog.findByIdAndDelete(Id)
+        const { id } = req.body;
+        const blog = await Blog.findByIdAndDelete(id)
 
         res.json({ success: true, message: 'blog deleted successfully' })
     } catch (error) {
@@ -101,8 +101,8 @@ export const togglePublish = async (req, res) => {
 
 export const addComment = async (req, res) => {
     try {
-        const { blog, name, content } = req.body;
-        await Comment.create({ blog, name, content })
+        const { blogId, name, content } = req.body;
+        await Comment.create({ blog:blogId, name, content })
         res.json({ success: true, message: 'Comment Added for Review' })
 
     } catch (error) {
@@ -120,7 +120,7 @@ export const getBlogComments = async (req, res) => {
 
         
         //Delete all comments assosiated with the blogs:if blog delete then all comments delete 
-        await Comment.deleteMany({blog:id});
+        await Comment.deleteMany({blog:blogId});
 
 
 
